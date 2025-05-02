@@ -1,4 +1,5 @@
 'use strict';
+const { hash } = require("argon2");
 const {
   Model
 } = require('sequelize');
@@ -29,9 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: [6, 12]
-      }
     },
     rol: {
       type: DataTypes.ENUM("Usuario", "Admin"),
@@ -41,6 +39,13 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Usuarios',
+    hooks: {
+      beforeSave: async (user, options) => {
+        if(user.changed('password')){
+          user.password = await hash(user.password);
+        }
+      }
+    }
   });
   return Usuarios;
 };

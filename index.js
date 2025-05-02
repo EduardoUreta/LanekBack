@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import path from "path";
-import { AnimalesRoutes, UsuariosRoutes } from "./routes/index.js";
+import { AnimalesRoutes, SessionsRoutes, UsuariosRoutes } from "./routes/index.js";
 
 const app = express();
 const port = 3000;
@@ -14,12 +14,13 @@ app.use(express.urlencoded({ extended: true}));
 
 // CORS
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: 'http://localhost:5173',
     credentials: true, 
 }));
 
 app.use('/api/animales', AnimalesRoutes);
 app.use('/api/usuarios', UsuariosRoutes);
+app.use('/api/auth', SessionsRoutes);
 
 // app.use("/*", (req, res) => {
 //     res.sendFile(path.join(process.cwd(),"public/index.html"));
