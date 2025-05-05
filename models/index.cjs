@@ -17,6 +17,7 @@ if (config.url) {
     .catch(err => console.error('Error de conexión:', err));
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
+  console.log("Conectando a:", config.host, config.database);
 }
 
 fs
