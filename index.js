@@ -9,8 +9,8 @@ const port = 3000;
 
 app.use(cookieParser());
 app.use(express.static("public"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true,  limit: '5mb'}));
 
 // CORS
 app.use(cors({
