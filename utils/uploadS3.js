@@ -14,7 +14,6 @@ export const uploadFileToS3 = (file, bucketName) => {
     Bucket: bucketName,
     Key: fileName,
     Body: file.buffer,
-    ACL: 'public-read',
     ContentType: file.mimetype
   };
 
