@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true}));
 
 // CORS
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://eduardoureta.xyz/', 'http://eduardoureta.xyz/'],
+    origin: ['http://localhost:5173', 'https://eduardoureta.xyz', 'http://eduardoureta.xyz'],
     credentials: true, 
 }));
 
@@ -22,8 +22,8 @@ app.use('/api/animales', AnimalesRoutes);
 app.use('/api/usuarios', UsuariosRoutes);
 app.use('/api/auth', SessionsRoutes);
 
-app.use("/*", (req, res) => {
-    res.sendFile(path.join(process.cwd(),"public/index.html"));
+app.use("/*path", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "public/index.html"));
 });
 
 app.listen(port, () => {
