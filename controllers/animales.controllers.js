@@ -3,11 +3,17 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { uploadFileToS3 } from "../utils/uploadS3.js";
+import AWS from 'aws-sdk';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const { Animales } = db.default;
+
+const s3 = new AWS.S3();
+
+const BUCKET_NAME = 'imglanek'; 
+const REGION = 'us-east-1';
 
 export class AnimalesControllers {
 
@@ -114,16 +120,26 @@ export class AnimalesControllers {
 
     static descargarImagenAnimal = async(req, res, next) => {
         const { filename } = req.params;
-        const rutaArchivo = path.join(__dirname, '../public/assets/animales', filename);
 
-        res.download(rutaArchivo, (err) => {
-            if (err) {
-                console.error('Error al descargar:', err);
+        const params = {
+            Bucket: BUCKET_NAME,
+            Key: filename, // El nombre del archivo en S3
+        };
+
+        try {
+                // Obtiene la imagen desde S3
+                const data = await s3.getObject(params).promise();
+
+                // Establecer el tipo de contenido correcto según la extensión del archivo
+                res.setHeader('Content-Type', data.ContentType);
+                res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+
+                // Enviar la imagen como respuesta
+                res.send(data.Body);
+            } catch (err) {
+                console.error('Error al descargar desde S3:', err);
                 res.status(404).send('Archivo no encontrado');
             }
-        });
     };
-
-    // .
 
 };
