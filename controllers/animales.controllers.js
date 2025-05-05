@@ -2,7 +2,7 @@ import * as db from "../models/index.cjs";
 import path from "path";
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import { uploadFileToS3 } from "../utils";
+import { uploadFileToS3 } from "../utils/uploadS3.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
