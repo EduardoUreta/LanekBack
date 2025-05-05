@@ -24,7 +24,8 @@ export class AnimalesControllers {
         const usuarioId = req.params.id;
         try {
             const animal = await Animales.findOne({where: {UsuarioId: usuarioId}});
-            if(!animal) return res.status(404).json({message: "Animales No Encontrado"});
+            // if(!animal) return res.status(404).json({message: "Animales No Encontrado"});
+            if(!animal) return res.status(200).json(null);
 
             return res.status(200).json(animal);
         } catch (error) {
