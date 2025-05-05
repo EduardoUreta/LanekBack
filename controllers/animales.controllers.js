@@ -2,6 +2,7 @@ import * as db from "../models/index.cjs";
 import path from "path";
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { uploadFileToS3 } from "../utils";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,30 +35,41 @@ export class AnimalesControllers {
         };
     };
 
-    static crearAnimal = async(req, res, next) => {
+
+    static crearAnimal = async (req, res, next) => {
         const datos = req.body;
 
         let imagenURL = null;
+
+        // Subir imagen a S3 si viene un archivo
         if (req.file) {
-            imagenURL = `assets/animales/${req.file.filename}`;
-        };
+            try {
+                const result = await uploadFileToS3(req.file, 'imglanek');
+                imagenURL = result.Location; 
+            } catch (err) {
+                console.error("Error al subir a S3:", err);
+                return res.status(500).json({ message: "Error al subir la imagen." });
+            }
+        }
 
         const datosNuevos = {
-            ...datos, 
-            imagen_url: imagenURL 
+            ...datos,
+            imagen_url: imagenURL
         };
 
         try {
-            if(!datosNuevos.animalFavorito) return res.status(400).json({message: "Datos Faltantes"});
-            if(!datosNuevos.imagen_url) return res.status(400).json({message: "Datos Faltantes"});
+            if (!datosNuevos.animalFavorito || !datosNuevos.imagen_url) {
+                return res.status(400).json({ message: "Datos faltantes" });
+            }
 
             const nuevoAnimal = await Animales.create(datosNuevos);
-            return res.status(201).json({message: "Animal Creado Correctamente"});
+            return res.status(201).json({ message: "Animal creado correctamente" });
         } catch (error) {
             console.error(error);
             next(error);
-        };
+        }
     };
+
 
     static actualizarAnimal = async(req, res, next) => {
         const nuevosDatos = req.body;
