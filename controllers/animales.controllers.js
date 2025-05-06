@@ -99,19 +99,27 @@ export class AnimalesControllers {
             const animal = await Animales.findByPk(id);
             if (!animal) return res.status(404).json({ message: "Animal No Encontrado" });
     
-            const rutaImagen = path.join(__dirname, '../public/', animal.imagen_url);
+            const imagenURL = animal.imagen_url;
+            const nombreArchivo = imagenURL.replace('https://imglanek.s3.amazonaws.com/', '');
     
-            fs.unlink(rutaImagen, (err) => {
+            const params = {
+                Bucket: 'imglanek',
+                Key: nombreArchivo
+            };
+    
+            s3.deleteObject(params, async (err, data) => {
                 if (err) {
-                    console.error("Error eliminando la imagen: ", err);
-                } else {
-                    console.log("Imagen eliminada correctamente.");
+                    console.error("Error al eliminar la imagen de S3:", err);
+                    return res.status(500).json({ message: "Error al eliminar la imagen del bucket" });
                 }
+    
+                console.log("Imagen eliminada de S3:", nombreArchivo);
+    
+                await Animales.destroy({ where: { id } });
+    
+                return res.status(200).json({ message: "Animal eliminado correctamente" });
             });
-    
-            await Animales.destroy({ where: { id } });
-    
-            return res.status(200).json({ message: "Animal Eliminado" });
+
         } catch (error) {
             console.error(error);
             next(error);
@@ -125,11 +133,11 @@ export class AnimalesControllers {
 
         const params = {
             Bucket: BUCKET_NAME,
-            Key: filename, // El nombre del archivo en S3
+            Key: filename, 
         };
 
         try {
-                // Obtiene la imagen desde S3
+                // Obtener imagen desde S3
                 const data = await s3.getObject(params).promise();
 
                 // Establecer el tipo de contenido correcto según la extensión del archivo
