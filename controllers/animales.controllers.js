@@ -120,6 +120,8 @@ export class AnimalesControllers {
 
     static descargarImagenAnimal = async(req, res, next) => {
         const { filename } = req.params;
+        console.log(filename);
+        
 
         const params = {
             Bucket: BUCKET_NAME,
