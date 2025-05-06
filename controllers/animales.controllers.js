@@ -121,6 +121,8 @@ export class AnimalesControllers {
     static descargarImagenAnimal = async(req, res, next) => {
         const { filename } = req.params;
 
+        console.log("Intentando descargar el archivo:", filename);
+
         const params = {
             Bucket: BUCKET_NAME,
             Key: filename, // El nombre del archivo en S3
