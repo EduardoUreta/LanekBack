@@ -32,7 +32,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          npx sequelize-cli db:migrate
+          npx sequelize db:migrate
 
       # - name: Build project
       #   run: npm run build
