@@ -28,12 +28,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Prisma Migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
-        run: |
-          npx prisma generate
-          npx prisma migrate deploy
+      # - name: Run Prisma Migrations
+      #   env:
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+      #   run: |
+      #     npx prisma generate
+      #     npx prisma migrate deploy
 
       - name: Build project
         run: npm run build
