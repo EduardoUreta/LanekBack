@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const config = !process.env.DATABASE_URL
+const config = process.env.DATABASE_URL
   ? {
       url: process.env.DATABASE_URL, 
       dialect: "postgres",

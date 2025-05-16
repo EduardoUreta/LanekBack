@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Sequelize Migrations
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           npx sequelize-cli db:migrate
 
