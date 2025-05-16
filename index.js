@@ -5,7 +5,7 @@ import path from "path";
 import { AnimalesRoutes, SessionsRoutes, UsuariosRoutes } from "./routes/index.js";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 5090;
 
 app.use(cookieParser());
 app.use(express.static("public"));
