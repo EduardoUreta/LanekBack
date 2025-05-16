@@ -35,8 +35,8 @@ jobs:
       #     npx prisma generate
       #     npx prisma migrate deploy
 
-      - name: Build project
-        run: npm run build
+      # - name: Build project
+      #   run: npm run build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
