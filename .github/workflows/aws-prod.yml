@@ -1,0 +1,74 @@
+name: Deploy to AWS ECS into cluster lanek-test-2
+
+on:
+  push:
+    branches:
+      - prod
+
+env:
+  ECR_REPOSITORY: eduardo-test
+  IMAGE_TAG: latest
+  ECS_CLUSTER: lanek-test-2
+  ECS_SERVICE: eduardo-test-service
+  TASK_FAMILY: eduardo-test-task
+
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Prisma Migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+        run: |
+          npx prisma generate
+          npx prisma migrate deploy
+
+      - name: Build project
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Restart ECS Service
+        run: |
+          aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --force-new-deployment
+
+    #   # Detiene el servicio con la misma definición de tarea
+    #   - name: Stop ECS Service
+    #     run: |
+    #       TASK_REVISION=$(aws ecs describe-task-definition --task-definition $TASK_FAMILY | egrep "revision" | tr "/" " "| tr "," " " | awk '{print $2}' | sed 's/"$//')
+    #       TASK_ID=$(aws ecs list-tasks --cluster $ECS_CLUSTER --desired-status RUNNING --family $TASK_FAMILY| egrep "task" | tr "/" " " | tr "[" " " |  awk '{print $3}' | sed 's/"$//')
+    #       aws ecs stop-task --cluster $ECS_CLUSTER --task $TASK_ID
+
+    #   # Reinicia el servicio con la misma definición de tarea
+    #   - name: Restart ECS Service
+    #     run: |
+    #       aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --force-new-deployment
