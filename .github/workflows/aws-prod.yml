@@ -28,12 +28,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # - name: Run Prisma Migrations
-      #   env:
-      #     DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
-      #   run: |
-      #     npx prisma generate
-      #     npx prisma migrate deploy
+      - name: Run Sequelize Migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+        run: |
+          npx sequelize-cli db:migrate
 
       # - name: Build project
       #   run: npm run build
