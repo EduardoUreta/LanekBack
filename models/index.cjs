@@ -16,7 +16,16 @@ if (config.url) {
     .then(() => console.log('Conectado a PostgreSQL en Neon.tech'))
     .catch(err => console.error('Error de conexión:', err));
 } else {
-  sequelize = new Sequelize(config.url);
+  sequelize = new Sequelize(config.url, {
+      dialect: "postgres",
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      },
+    }
+  );
   console.log("Conectando a:", config.host, config.database);
 }
 
