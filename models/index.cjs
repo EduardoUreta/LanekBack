@@ -15,7 +15,7 @@ if (config) {
   sequelize.authenticate()
   .then(() => console.log('✅ Conectado a PostgreSQL'))
   .catch(err => console.error('❌ Error de conexión:', err));
-  console.log("Conectando a:", config.host, config.database);
+  console.log("Conectando a:",config, config.url, config.host, config.database);
 }
 
 fs
