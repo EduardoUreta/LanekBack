@@ -10,13 +10,11 @@ const db = {};
 
 let sequelize;
 
-if (config.url) {
-  sequelize = new Sequelize(config.url, config); 
-  sequelize.authenticate()
-    .then(() => console.log('Conectado a PostgreSQL en Neon.tech'))
-    .catch(err => console.error('Error de conexión:', err));
-} else {
+if (config) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize.authenticate()
+  .then(() => console.log('✅ Conectado a PostgreSQL'))
+  .catch(err => console.error('❌ Error de conexión:', err));
   console.log("Conectando a:", config.host, config.database);
 }
 
