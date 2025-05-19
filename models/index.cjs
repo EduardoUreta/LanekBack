@@ -10,16 +10,9 @@ const db = {};
 
 let sequelize;
 
-if (config) {
-  sequelize = new Sequelize(config.database, config.username, config.password, {
-    host: config.host,
-    dialect: config.dialect,
-    dialectOptions: config.dialectOptions,
-  });
-  sequelize.authenticate()
-  .then(() => console.log('✅ Conectado a PostgreSQL'))
-  .catch(err => console.error('❌ Error de conexión:', err));
-  console.log("Conectando a:",config, config.url, config.host, config.database);
+if (config.url) {
+  sequelize = new Sequelize(config.url);
+  console.log("Conectando a:", config.host, config.database);
 }
 
 fs
