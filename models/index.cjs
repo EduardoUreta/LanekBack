@@ -11,7 +11,7 @@ const db = {};
 let sequelize;
 
 if (config.url) {
-  sequelize = new Sequelize(config.url);
+  sequelize = new Sequelize('postgresql://postgres:eduardo-test-db@eduardo-test-db.ccffs1c8f6p9.us-east-2.rds.amazonaws.com:5432/eduardo-test-db');
   console.log("Conectando a:", config.host, config.database);
 }
 
