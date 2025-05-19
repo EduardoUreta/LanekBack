@@ -1,10 +1,5 @@
 // require('dotenv').config();
 
-
-if (!process.env.DATABASE_URL) {
-  console.error("❌ DATABASE_URL no está definida en GitHub Actions");
-}
-
 const config = {
     url: process.env.DATABASE_URL, 
     dialect: "postgres",
