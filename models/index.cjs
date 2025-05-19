@@ -11,7 +11,23 @@ const db = {};
 let sequelize;
 
 if (config.url) {
-  sequelize = new Sequelize(config.url);
+  try {
+    sequelize = new Sequelize(config.url, {
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+  });
+  console.log('Conectado a BD');
+  } catch (error) {
+    console.log('Error al conectar a la BD');
+  }
+} else {
+  console.log('No hay URL');
+  
 }
 
 fs
