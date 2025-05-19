@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true,  limit: '5mb'}));
 
 // CORS
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://eduardoureta.xyz', 'http://eduardoureta.xyz'],
+    origin: ['http://localhost:5173', 'https://eduardoureta.xyz', 'http://eduardoureta.xyz', 'http://demo.lanekapp.com:5090/'],
     credentials: true, 
 }));
 
